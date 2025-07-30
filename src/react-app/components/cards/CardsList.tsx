@@ -1,17 +1,19 @@
 import React from 'react';
-import { Card, LinkCard as LinkCardType, PollCard as PollCardType } from '../../../shared';
+import { Card, LinkCard as LinkCardType, PollCard as PollCardType, CostCard as CostCardType } from '../../../shared';
 import LinkCard from './LinkCard';
 import CardComponent from '../Card';
 import PollCard from './PollCard';
+import CostCard from './CostCard';
 
 interface CardsListProps {
   cards: Card[];
   userId: string;
   onUpdateCard: (card: PollCardType) => void;
   onDeleteCard: (cardId: string) => void;
+  activityUsers?: { userId: string; name?: string }[];
 }
 
-export const CardsList: React.FC<CardsListProps> = ({ cards, userId, onUpdateCard, onDeleteCard }) => {
+export const CardsList: React.FC<CardsListProps> = ({ cards, userId, onUpdateCard, onDeleteCard, activityUsers = [] }) => {
   if (cards.length === 0) {
     return (
       <div className="text-center py-12">
@@ -51,6 +53,12 @@ export const CardsList: React.FC<CardsListProps> = ({ cards, userId, onUpdateCar
                     onUpdateCard({ ...(card as PollCardType), votes });
                   }}
                 />
+              </CardComponent>
+            );
+          case 'cost':
+            return (
+              <CardComponent key={card.id} onDelete={() => onDeleteCard(card.id)}>
+                <CostCard card={card as CostCardType} activityUsers={activityUsers} />
               </CardComponent>
             );
           default:
