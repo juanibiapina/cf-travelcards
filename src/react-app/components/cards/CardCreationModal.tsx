@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { FiX } from 'react-icons/fi';
-import { LinkCard, LinkCardInput, PollCardInput } from '../../../shared';
+import { LinkCard, LinkCardInput } from '../../../shared';
 import { validateUrl } from '../../utils/url';
 
 interface CardCreationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onCreateCard: (
-    card: LinkCardInput | PollCardInput
+    card: LinkCardInput
   ) => void;
   onUpdateCard?: (card: LinkCard) => void;
   editingCard?: LinkCard;
@@ -25,27 +25,17 @@ export const CardCreationModal: React.FC<CardCreationModalProps> = ({
   const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [urlError, setUrlError] = useState('');
-  const [cardType, setCardType] = useState<'link' | 'poll'>('link');
-  const [pollQuestion, setPollQuestion] = useState('');
-  const [pollOptions, setPollOptions] = useState(['', '']);
-  const [pollError, setPollError] = useState('');
 
   const isEditing = !!editingCard;
 
   // Initialize form with editing card data
   useEffect(() => {
     if (editingCard) {
-      setCardType('link'); // Only link cards can be edited for now
       setUrl(editingCard.url);
       setTitle(editingCard.title || '');
       setDescription(editingCard.description || '');
       setImageUrl(editingCard.imageUrl || '');
-    } else {
-      setCardType('link'); // Reset to default when opening for new card
     }
-    setPollQuestion('');
-    setPollOptions(['', '']);
-    setPollError('');
   }, [editingCard, isOpen]);
 
   const validateAndSetUrl = (value: string) => {
@@ -115,28 +105,7 @@ export const CardCreationModal: React.FC<CardCreationModalProps> = ({
           </button>
         </div>
         <div className="p-6">
-          {/* Card Type Selection */}
-          <div className="mb-4 flex space-x-2">
-            <button
-              type="button"
-              className={`px-3 py-1 rounded ${cardType === 'link' ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-700'}`}
-              onClick={() => setCardType('link')}
-              aria-pressed={cardType === 'link'}
-            >
-              Link
-            </button>
-            <button
-              type="button"
-              className={`px-3 py-1 rounded ${cardType === 'poll' ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-700'}`}
-              onClick={() => setCardType('poll')}
-              aria-pressed={cardType === 'poll'}
-            >
-              Poll
-            </button>
-          </div>
-
-          {/* Only show link card form for now */}
-          {cardType === 'link' && (
+          {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label htmlFor="url" className="block text-sm font-medium text-gray-700">URL<span className="text-red-500">*</span></label>
@@ -184,69 +153,7 @@ export const CardCreationModal: React.FC<CardCreationModalProps> = ({
                 <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">{isEditing ? 'Update' : 'Create'}</button>
               </div>
             </form>
-          )}
-          {cardType === 'poll' && (
-            <form className="space-y-4" onSubmit={e => {
-              e.preventDefault();
-              // Validate poll question and options
-              if (!pollQuestion.trim()) {
-                setPollError('Poll question is required');
-                return;
-              }
-              const trimmedOptions = pollOptions.map(opt => opt.trim()).filter(Boolean);
-              if (trimmedOptions.length < 2) {
-                setPollError('At least two options are required');
-                return;
-              }
-              setPollError('');
-              onCreateCard({
-                type: 'poll',
-                question: pollQuestion.trim(),
-                options: trimmedOptions,
-              });
-              handleClose();
-            }}>
-              <div>
-                <label htmlFor="poll-question" className="block text-sm font-medium text-gray-700">Poll Question<span className="text-red-500">*</span></label>
-                <input
-                  id="poll-question"
-                  type="text"
-                  value={pollQuestion}
-                  onChange={e => setPollQuestion(e.target.value)}
-                  className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-200"
-                  required
-                />
-              </div>
-              {pollOptions.map((option, idx) => (
-                <div key={idx} className="flex items-center space-x-2">
-                  <label htmlFor={`option-${idx+1}`} className="block text-sm font-medium text-gray-700">Option {idx+1}<span className="text-red-500">*</span></label>
-                  <input
-                    id={`option-${idx+1}`}
-                    type="text"
-                    value={option}
-                    onChange={e => {
-                      const newOptions = [...pollOptions];
-                      newOptions[idx] = e.target.value;
-                      setPollOptions(newOptions);
-                    }}
-                    className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-200"
-                    required
-                  />
-                  {pollOptions.length > 2 && (
-                    <button type="button" aria-label="Remove option" onClick={() => {
-                      setPollOptions(pollOptions.filter((_, i) => i !== idx));
-                    }} className="text-red-500 hover:text-red-700">&times;</button>
-                  )}
-                </div>
-              ))}
-              <button type="button" onClick={() => setPollOptions([...pollOptions, ''])} className="text-blue-600 hover:underline text-sm">Add option</button>
-              {pollError && <p className="text-red-500 text-xs mt-1">{pollError}</p>}
-              <div className="flex justify-end space-x-2 mt-6">
-                <button type="button" onClick={handleClose} className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Cancel</button>
-                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Create</button>
-              </div>
-            </form>
-          )}
+          }
         </div>
       </div>
     </div>

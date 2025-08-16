@@ -9,7 +9,7 @@ import ActivityHeader from "../components/ActivityHeader";
 import CardCreationModal from "../components/cards/CardCreationModal";
 import CardsList from "../components/cards/CardsList";
 import { useActivityRoom } from "../hooks/useActivityRoom";
-import { LinkCard, PollCard, LinkCardInput, PollCardInput } from "../../shared";
+import { LinkCard, LinkCardInput } from "../../shared";
 
 const ActivityPage = () => {
   const params = useParams<{ activityId: string }>();
@@ -36,28 +36,16 @@ const ActivityPage = () => {
     };
   }, [activity?.name, loading, activity]);
 
-  const handleCreateCard = (cardData: LinkCardInput | PollCardInput) => {
+  const handleCreateCard = (cardData: LinkCardInput) => {
     if (!isConnected) return;
 
-    const base = {
+    const newCard: LinkCard = {
+      ...cardData,
       id: `card-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-
-    if (cardData.type === 'link') {
-      const newCard: LinkCard = {
-        ...cardData,
-        ...base,
-      };
-      createCard(newCard);
-    } else if (cardData.type === 'poll') {
-      const newCard: PollCard = {
-        ...cardData,
-        ...base,
-      };
-      createCard(newCard);
-    }
+    createCard(newCard);
   };
 
   const handleUpdateCard = (card: LinkCard) => {
@@ -128,8 +116,6 @@ const ActivityPage = () => {
         {/* Cards List */}
         <CardsList
           cards={activity?.cards || []}
-          userId={userId}
-          onUpdateCard={updateCard}
           onDeleteCard={deleteCard}
         />
 
