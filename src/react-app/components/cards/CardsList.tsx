@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card as CardType } from '../../../shared';
 import CardComponent from './CardComponent';
-import Card from '../Card';
+import Box from '../Box';
 
 interface CardsListProps {
   cards: CardType[];
@@ -23,9 +23,9 @@ export const CardsList: React.FC<CardsListProps> = ({ cards, onDeleteCard }) => 
   return (
     <div className="space-y-4">
       {cards.map((card) => (
-        <Card key={card.id}>
+        <Box key={card.id}>
           <CardComponent card={card} onDelete={() => onDeleteCard(card.id)} />
-        </Card>
+        </Box>
       ))}
     </div>
   );
