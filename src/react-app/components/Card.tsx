@@ -3,11 +3,9 @@ interface CardProps {
   className?: string;
 }
 
-const Card = ({ children, className = "" }: CardProps) => {
-  const baseClasses = "bg-white rounded-lg shadow-lg p-8 max-w-md w-full";
-
+const Card = ({ children }: CardProps) => {
   return (
-    <div className={`${baseClasses} ${className}`} data-testid="card">
+    <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full" data-testid="card">
       {children}
     </div>
   );
