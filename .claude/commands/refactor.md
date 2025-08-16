@@ -1,7 +1,12 @@
 ---
-description: Refactor after last commit
+description: Refactor
 ---
 
-- Check last commit description to understand what was done
-- Describe the new state
-- Look at files touched in the last commit and identify refactoring opportunities
+User request: $ARGUMENTS
+
+Perform a refactoring in the codebase:
+
+1. Understand the user request
+2. Identify relevant files
+3. Describe the new desired state
+4. Create plan to achieve the desired state
