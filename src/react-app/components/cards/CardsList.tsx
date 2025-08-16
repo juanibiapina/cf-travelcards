@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card as CardType } from '../../../shared';
-import LinkCard from './LinkCard';
-import CardComponent from '../Card';
+import CardComponent from './CardComponent';
+import Card from '../Card';
 
 interface CardsListProps {
   cards: CardType[];
@@ -23,9 +23,9 @@ export const CardsList: React.FC<CardsListProps> = ({ cards, onDeleteCard }) => 
   return (
     <div className="space-y-4">
       {cards.map((card) => (
-        <CardComponent key={card.id} onDelete={() => onDeleteCard(card.id)}>
-          <LinkCard card={card} />
-        </CardComponent>
+        <Card key={card.id} onDelete={() => onDeleteCard(card.id)}>
+          <CardComponent card={card} />
+        </Card>
       ))}
     </div>
   );

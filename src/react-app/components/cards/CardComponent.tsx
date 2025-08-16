@@ -1,10 +1,10 @@
 import { Card as CardType } from '../../../shared';
 
-interface LinkCardProps {
+interface CardComponentProps {
   card: CardType;
 }
 
-export const LinkCard: React.FC<LinkCardProps> = ({ card }) => {
+export const CardComponent: React.FC<CardComponentProps> = ({ card }) => {
   const handleLinkClick = (e: React.MouseEvent) => {
     e.preventDefault();
     window.open(card.url, '_blank', 'noopener,noreferrer');
@@ -49,4 +49,4 @@ export const LinkCard: React.FC<LinkCardProps> = ({ card }) => {
   );
 };
 
-export default LinkCard;
+export default CardComponent;
