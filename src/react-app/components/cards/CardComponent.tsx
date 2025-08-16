@@ -1,17 +1,25 @@
 import { Card as CardType } from '../../../shared';
+import CardContextMenu from './CardContextMenu';
 
 interface CardComponentProps {
   card: CardType;
+  onDelete?: () => void;
 }
 
-export const CardComponent: React.FC<CardComponentProps> = ({ card }) => {
+export const CardComponent: React.FC<CardComponentProps> = ({ card, onDelete }) => {
   const handleLinkClick = (e: React.MouseEvent) => {
     e.preventDefault();
     window.open(card.url, '_blank', 'noopener,noreferrer');
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 relative">
+      {onDelete && (
+        <div className="absolute bottom-1 right-1">
+          <CardContextMenu onDelete={onDelete} />
+        </div>
+      )}
+
       {card.imageUrl && (
         <div className="aspect-video rounded-lg overflow-hidden bg-gray-100">
           <img

@@ -23,8 +23,8 @@ export const CardsList: React.FC<CardsListProps> = ({ cards, onDeleteCard }) => 
   return (
     <div className="space-y-4">
       {cards.map((card) => (
-        <Card key={card.id} onDelete={() => onDeleteCard(card.id)}>
-          <CardComponent card={card} />
+        <Card key={card.id}>
+          <CardComponent card={card} onDelete={() => onDeleteCard(card.id)} />
         </Card>
       ))}
     </div>
