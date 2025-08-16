@@ -9,7 +9,7 @@ import ActivityHeader from "../components/ActivityHeader";
 import CardCreationModal from "../components/cards/CardCreationModal";
 import CardsList from "../components/cards/CardsList";
 import { useActivityRoom } from "../hooks/useActivityRoom";
-import { LinkCard, LinkCardInput } from "../../shared";
+import { Card as CardType, CardInput } from "../../shared";
 
 const ActivityPage = () => {
   const params = useParams<{ activityId: string }>();
@@ -36,10 +36,10 @@ const ActivityPage = () => {
     };
   }, [activity?.name, loading, activity]);
 
-  const handleCreateCard = (cardData: LinkCardInput) => {
+  const handleCreateCard = (cardData: CardInput) => {
     if (!isConnected) return;
 
-    const newCard: LinkCard = {
+    const newCard: CardType = {
       ...cardData,
       id: `card-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       createdAt: new Date().toISOString(),
@@ -48,7 +48,7 @@ const ActivityPage = () => {
     createCard(newCard);
   };
 
-  const handleUpdateCard = (card: LinkCard) => {
+  const handleUpdateCard = (card: CardType) => {
     if (!isConnected) return;
     updateCard(card);
   };

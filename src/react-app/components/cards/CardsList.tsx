@@ -1,10 +1,10 @@
 import React from 'react';
-import { Card, LinkCard as LinkCardType } from '../../../shared';
+import { Card as CardType } from '../../../shared';
 import LinkCard from './LinkCard';
 import CardComponent from '../Card';
 
 interface CardsListProps {
-  cards: Card[];
+  cards: CardType[];
   onDeleteCard: (cardId: string) => void;
 }
 
@@ -22,23 +22,11 @@ export const CardsList: React.FC<CardsListProps> = ({ cards, onDeleteCard }) => 
 
   return (
     <div className="space-y-4">
-      {cards.map((card) => {
-        if (card.type === 'link') {
-          return (
-            <CardComponent key={card.id} onDelete={() => onDeleteCard(card.id)}>
-              <LinkCard card={card as LinkCardType} />
-            </CardComponent>
-          );
-        }
-
-        return (
-          <CardComponent key={card.id} onDelete={() => onDeleteCard(card.id)}>
-            <div className="p-4 border rounded-lg bg-gray-50">
-              <p className="text-gray-600">Unknown card type: {card.type}</p>
-            </div>
-          </CardComponent>
-        );
-      })}
+      {cards.map((card) => (
+        <CardComponent key={card.id} onDelete={() => onDeleteCard(card.id)}>
+          <LinkCard card={card} />
+        </CardComponent>
+      ))}
     </div>
   );
 };

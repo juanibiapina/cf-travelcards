@@ -1,7 +1,7 @@
-import { LinkCard as LinkCardType } from '../../../shared';
+import { Card as CardType } from '../../../shared';
 
 interface LinkCardProps {
-  card: LinkCardType;
+  card: CardType;
 }
 
 export const LinkCard: React.FC<LinkCardProps> = ({ card }) => {

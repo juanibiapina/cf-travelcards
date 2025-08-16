@@ -1,18 +1,12 @@
 export interface Card {
   id: string;
-  type: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface LinkCard extends Card {
-  type: 'link';
   url: string;
   title?: string;
   description?: string;
   imageUrl?: string;
+  createdAt: string;
+  updatedAt: string;
 }
-
 
 export type Activity = {
   name?: string;
@@ -22,8 +16,7 @@ export type Activity = {
   cards?: Card[];
 }
 
-export type LinkCardInput = {
-  type: 'link';
+export type CardInput = {
   url: string;
   title?: string;
   description?: string;

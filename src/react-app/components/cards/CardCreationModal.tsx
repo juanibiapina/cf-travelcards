@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { FiX } from 'react-icons/fi';
-import { LinkCard, LinkCardInput } from '../../../shared';
+import { Card as CardType, CardInput } from '../../../shared';
 import { validateUrl } from '../../utils/url';
 
 interface CardCreationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreateCard: (
-    card: LinkCardInput
-  ) => void;
-  onUpdateCard?: (card: LinkCard) => void;
-  editingCard?: LinkCard;
+  onCreateCard: (card: CardInput) => void;
+  onUpdateCard?: (card: CardType) => void;
+  editingCard?: CardType;
 }
 
 export const CardCreationModal: React.FC<CardCreationModalProps> = ({
@@ -60,8 +58,7 @@ export const CardCreationModal: React.FC<CardCreationModalProps> = ({
       return;
     }
 
-    const cardData = {
-      type: 'link' as const,
+    const cardData: CardInput = {
       url: url.trim(),
       title: title.trim() || undefined,
       description: description.trim() || undefined,
@@ -69,7 +66,7 @@ export const CardCreationModal: React.FC<CardCreationModalProps> = ({
     };
 
     if (isEditing && editingCard && onUpdateCard) {
-      const updatedCard: LinkCard = {
+      const updatedCard: CardType = {
         ...editingCard,
         ...cardData,
         updatedAt: new Date().toISOString(),
@@ -98,7 +95,7 @@ export const CardCreationModal: React.FC<CardCreationModalProps> = ({
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b">
           <h2 className="text-xl font-semibold text-gray-900">
-            {isEditing ? 'Edit Link Card' : 'Create Card'}
+            {isEditing ? 'Edit Card' : 'Create Card'}
           </h2>
           <button onClick={handleClose} aria-label="Close" className="text-gray-400 hover:text-gray-600">
             <FiX size={24} />
