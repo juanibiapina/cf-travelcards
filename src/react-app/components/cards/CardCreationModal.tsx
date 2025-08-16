@@ -102,8 +102,7 @@ export const CardCreationModal: React.FC<CardCreationModalProps> = ({
           </button>
         </div>
         <div className="p-6">
-          {
-            <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label htmlFor="url" className="block text-sm font-medium text-gray-700">URL<span className="text-red-500">*</span></label>
                 <input
@@ -150,7 +149,6 @@ export const CardCreationModal: React.FC<CardCreationModalProps> = ({
                 <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">{isEditing ? 'Update' : 'Create'}</button>
               </div>
             </form>
-          }
         </div>
       </div>
     </div>
