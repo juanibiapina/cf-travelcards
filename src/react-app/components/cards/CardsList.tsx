@@ -1,10 +1,10 @@
 import React from 'react';
-import { Card as CardType } from '../../../shared';
+import { Card } from '../../../shared';
 import CardComponent from './CardComponent';
 import Box from '../Box';
 
 interface CardsListProps {
-  cards: CardType[];
+  cards: Card[];
   onDeleteCard: (cardId: string) => void;
 }
 

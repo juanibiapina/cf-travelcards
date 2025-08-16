@@ -1,8 +1,8 @@
-import { Card as CardType } from '../../../shared';
+import { Card } from '../../../shared';
 import CardContextMenu from './CardContextMenu';
 
 interface CardComponentProps {
-  card: CardType;
+  card: Card;
   onDelete?: () => void;
 }
 

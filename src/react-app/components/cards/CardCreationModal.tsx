@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { FiX } from 'react-icons/fi';
-import { Card as CardType, CardInput } from '../../../shared';
+import { Card, CardInput } from '../../../shared';
 import { validateUrl } from '../../utils/url';
 
 interface CardCreationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onCreateCard: (card: CardInput) => void;
-  onUpdateCard?: (card: CardType) => void;
-  editingCard?: CardType;
+  onUpdateCard?: (card: Card) => void;
+  editingCard?: Card;
 }
 
 export const CardCreationModal: React.FC<CardCreationModalProps> = ({
@@ -66,7 +66,7 @@ export const CardCreationModal: React.FC<CardCreationModalProps> = ({
     };
 
     if (isEditing && editingCard && onUpdateCard) {
-      const updatedCard: CardType = {
+      const updatedCard: Card = {
         ...editingCard,
         ...cardData,
         updatedAt: new Date().toISOString(),
