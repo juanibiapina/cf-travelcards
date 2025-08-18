@@ -15,13 +15,11 @@ export const CardComponent: React.FC<CardComponentProps> = ({ card, onDelete }) 
         </div>
       )}
 
-      <div className="space-y-2">
-        {card.title && (
-          <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">
-            {card.title}
-          </h3>
-        )}
-      </div>
+      {card.title && (
+        <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">
+          {card.title}
+        </h3>
+      )}
     </div>
   );
 };

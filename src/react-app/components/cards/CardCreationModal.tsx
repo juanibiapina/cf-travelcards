@@ -69,22 +69,22 @@ export const CardCreationModal: React.FC<CardCreationModalProps> = ({
           </button>
         </div>
         <div className="p-6">
-          <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
-                <input
-                  id="title"
-                  type="text"
-                  value={title}
-                  onChange={e => setTitle(e.target.value)}
-                  className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-200"
-                />
-              </div>
-              <div className="flex justify-end space-x-2 mt-6">
-                <button type="button" onClick={handleClose} className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Cancel</button>
-                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">{isEditing ? 'Update' : 'Create'}</button>
-              </div>
-            </form>
+          <form onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
+              <input
+                id="title"
+                type="text"
+                value={title}
+                onChange={e => setTitle(e.target.value)}
+                className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-200"
+              />
+            </div>
+            <div className="flex justify-end space-x-2 mt-6">
+              <button type="button" onClick={handleClose} className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Cancel</button>
+              <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">{isEditing ? 'Update' : 'Create'}</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
