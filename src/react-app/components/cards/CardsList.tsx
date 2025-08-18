@@ -5,10 +5,9 @@ import Box from '../Box';
 
 interface CardsListProps {
   cards: Card[];
-  onDeleteCard: (cardId: string) => void;
 }
 
-export const CardsList: React.FC<CardsListProps> = ({ cards, onDeleteCard }) => {
+export const CardsList: React.FC<CardsListProps> = ({ cards }) => {
   if (cards.length === 0) {
     return (
       <div className="text-center py-12">
@@ -24,7 +23,7 @@ export const CardsList: React.FC<CardsListProps> = ({ cards, onDeleteCard }) => 
     <div className="space-y-4">
       {cards.map((card) => (
         <Box key={card.id}>
-          <CardComponent card={card} onDelete={() => onDeleteCard(card.id)} />
+          <CardComponent card={card} />
         </Box>
       ))}
     </div>
