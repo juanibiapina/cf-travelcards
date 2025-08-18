@@ -7,26 +7,11 @@ interface CardComponentProps {
 }
 
 export const CardComponent: React.FC<CardComponentProps> = ({ card, onDelete }) => {
-  const handleLinkClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    window.open(card.url, '_blank', 'noopener,noreferrer');
-  };
-
   return (
     <div className="space-y-3 relative">
       {onDelete && (
         <div className="absolute bottom-1 right-1">
           <CardContextMenu onDelete={onDelete} />
-        </div>
-      )}
-
-      {card.imageUrl && (
-        <div className="aspect-video rounded-lg overflow-hidden bg-gray-100">
-          <img
-            src={card.imageUrl}
-            alt={card.title || 'Link preview'}
-            className="w-full h-full object-cover"
-          />
         </div>
       )}
 
@@ -36,22 +21,6 @@ export const CardComponent: React.FC<CardComponentProps> = ({ card, onDelete }) 
             {card.title}
           </h3>
         )}
-
-        {card.description && (
-          <p className="text-gray-600 text-sm line-clamp-3">
-            {card.description}
-          </p>
-        )}
-
-        <div className="flex items-center space-x-2">
-          <a
-            href={card.url}
-            onClick={handleLinkClick}
-            className="text-blue-600 hover:text-blue-800 text-sm font-medium truncate"
-          >
-            {card.url}
-          </a>
-        </div>
       </div>
     </div>
   );

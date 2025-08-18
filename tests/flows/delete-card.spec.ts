@@ -11,7 +11,6 @@ test.describe('Delete Card Flow', () => {
       id: 'card-' + randomUUID(),
       type: 'link',
       title: 'Test Card to Delete',
-      url: 'https://example.com',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };

@@ -1,9 +1,6 @@
 export interface Card {
   id: string;
-  url: string;
   title?: string;
-  description?: string;
-  imageUrl?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -17,10 +14,7 @@ export type Activity = {
 }
 
 export type CardInput = {
-  url: string;
   title?: string;
-  description?: string;
-  imageUrl?: string;
 };
 
 
