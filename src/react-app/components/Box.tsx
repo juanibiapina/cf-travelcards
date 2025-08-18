@@ -1,6 +1,5 @@
 interface BoxProps {
   children: React.ReactNode;
-  className?: string;
 }
 
 const Box = ({ children }: BoxProps) => {
