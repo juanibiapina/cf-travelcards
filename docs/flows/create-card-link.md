@@ -14,16 +14,19 @@ This flow describes how users can create a new card within an activity in the Tr
    - The Cards section displays with existing cards or "No cards yet" message
 
 2. **Open Card Creation Modal**
-   - User clicks the "Create Card" button (with plus icon)
-   - A modal opens titled "Create Card"
+   - User clicks the floating action button (plus icon) in the bottom right
+   - A sleek, modern modal opens with a single input field
 
 3. **Fill Card Information**
-   - User fills in:
-     - **Title** - Display name for the card
+   - User enters text in the input field:
+     - **Placeholder**: "What's on your mind?" for new cards
+     - **Placeholder**: "Update card..." for editing existing cards
+   - Input automatically receives focus when modal opens
 
 4. **Submit or Cancel**
-   - User clicks "Create Card" to submit the form
-   - Alternatively, user can click "Cancel" or "X" to close without saving
+   - User presses Enter or clicks "Create"/"Update" button to submit
+   - User presses Escape, clicks "Cancel", or clicks outside modal to close without saving
+   - Create/Update button is disabled when input is empty
 
 5. **Card Created and Displayed**
    - Modal closes automatically on successful creation

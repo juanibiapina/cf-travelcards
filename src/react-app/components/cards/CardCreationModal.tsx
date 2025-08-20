@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { FiX } from 'react-icons/fi';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardInput } from '../../../shared';
 
 interface CardCreationModalProps {
@@ -18,6 +17,7 @@ export const CardCreationModal: React.FC<CardCreationModalProps> = ({
   editingCard,
 }) => {
   const [title, setTitle] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const isEditing = !!editingCard;
 
@@ -27,6 +27,13 @@ export const CardCreationModal: React.FC<CardCreationModalProps> = ({
       setTitle(editingCard.title || '');
     }
   }, [editingCard, isOpen]);
+
+  // Auto-focus input when modal opens
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isOpen]);
 
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -55,34 +62,55 @@ export const CardCreationModal: React.FC<CardCreationModalProps> = ({
     onClose();
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      handleClose();
+    }
+  };
+
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      handleClose();
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" role="dialog" aria-modal="true">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-xl font-semibold text-gray-900">
-            {isEditing ? 'Edit Card' : 'Create Card'}
-          </h2>
-          <button onClick={handleClose} aria-label="Close" className="text-gray-400 hover:text-gray-600">
-            <FiX size={24} />
-          </button>
-        </div>
-        <div className="p-6">
+    <div
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+      role="dialog"
+      aria-modal="true"
+      onClick={handleBackdropClick}
+    >
+      <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl max-w-md w-full border border-white/20">
+        <div className="p-8">
           <form onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
-              <input
-                id="title"
-                type="text"
-                value={title}
-                onChange={e => setTitle(e.target.value)}
-                className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-200"
-              />
-            </div>
-            <div className="flex justify-end space-x-2 mt-6">
-              <button type="button" onClick={handleClose} className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Cancel</button>
-              <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">{isEditing ? 'Update' : 'Create'}</button>
+            <input
+              ref={inputRef}
+              type="text"
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={isEditing ? "Update card..." : "What's on your mind?"}
+              className="w-full text-xl border-none outline-none bg-transparent placeholder-gray-400 text-gray-800 font-light leading-relaxed py-2"
+              aria-label={isEditing ? "Update card" : "Create new card"}
+            />
+            <div className="flex justify-end mt-8 space-x-3">
+              <button
+                type="button"
+                onClick={handleClose}
+                className="px-5 py-2.5 text-gray-500 hover:text-gray-700 font-medium transition-colors duration-200 rounded-lg hover:bg-gray-100/50"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-5 py-2.5 bg-gray-800 hover:bg-gray-900 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={!title.trim()}
+              >
+                {isEditing ? 'Update' : 'Create'}
+              </button>
             </div>
           </form>
         </div>
