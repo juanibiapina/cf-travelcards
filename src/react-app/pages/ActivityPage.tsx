@@ -108,7 +108,6 @@ const ActivityPage = () => {
         startTime={activity?.startTime}
         onNameUpdate={handleNameUpdate}
         onDateChange={handleDateChange}
-        onCreateCard={() => setIsCreateModalOpen(true)}
         disabled={!isConnected}
       />
 
