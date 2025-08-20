@@ -7,11 +7,13 @@ import Box from '../Box';
 interface CardsListProps {
   cards: Card[];
   onReorderCard?: (cardId: string, newIndex: number) => void;
+  onAddCardExtraData?: (cardId: string, item: string) => void;
 }
 
-export const CardsList: React.FC<CardsListProps> = ({ cards, onReorderCard }) => {
+export const CardsList: React.FC<CardsListProps> = ({ cards, onReorderCard, onAddCardExtraData }) => {
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [activeDropZone, setActiveDropZone] = useState<number | null>(null);
+  const [extraDataInputCardId, setExtraDataInputCardId] = useState<string | null>(null);
 
   const isSelectionMode = selectedCardId !== null;
 
@@ -23,6 +25,19 @@ export const CardsList: React.FC<CardsListProps> = ({ cards, onReorderCard }) =>
     setSelectedCardId(null);
     setActiveDropZone(null);
   }, []);
+
+  const handleShowExtraDataInput = useCallback((cardId: string) => {
+    if (isSelectionMode) return; // Don't show input during selection mode
+    setExtraDataInputCardId(cardId);
+  }, [isSelectionMode]);
+
+  const handleHideExtraDataInput = useCallback(() => {
+    setExtraDataInputCardId(null);
+  }, []);
+
+  const handleAddExtraData = useCallback((cardId: string, item: string) => {
+    onAddCardExtraData?.(cardId, item);
+  }, [onAddCardExtraData]);
 
   const handleDropZoneClick = useCallback((index: number) => {
     if (!selectedCardId) return;
@@ -43,7 +58,10 @@ export const CardsList: React.FC<CardsListProps> = ({ cards, onReorderCard }) =>
     if (isSelectionMode) {
       handleTouchCancel();
     }
-  }, [isSelectionMode, handleTouchCancel]);
+    if (extraDataInputCardId) {
+      handleHideExtraDataInput();
+    }
+  }, [isSelectionMode, handleTouchCancel, extraDataInputCardId, handleHideExtraDataInput]);
 
   if (cards.length === 0) {
     return (
@@ -79,6 +97,10 @@ export const CardsList: React.FC<CardsListProps> = ({ cards, onReorderCard }) =>
               isSelected={selectedCardId === card.id}
               onLongPress={handleLongPress}
               onTouchCancel={handleTouchCancel}
+              onAddExtraData={handleAddExtraData}
+              showExtraDataInput={extraDataInputCardId === card.id}
+              onShowExtraDataInput={handleShowExtraDataInput}
+              onHideExtraDataInput={handleHideExtraDataInput}
             />
           </Box>
 

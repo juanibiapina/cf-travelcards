@@ -1,6 +1,7 @@
 export interface Card {
   id: string;
   title?: string;
+  extraData?: string[];
   createdAt: string;
   updatedAt: string;
 }
@@ -49,4 +50,20 @@ export type Message =
       type: "card-reorder";
       cardId: string;
       newIndex: number;
+    }
+  | {
+      type: "card-extra-data-add";
+      cardId: string;
+      extraDataItem: string;
+    }
+  | {
+      type: "card-extra-data-update";
+      cardId: string;
+      extraDataIndex: number;
+      updatedItem: string;
+    }
+  | {
+      type: "card-extra-data-delete";
+      cardId: string;
+      extraDataIndex: number;
     };

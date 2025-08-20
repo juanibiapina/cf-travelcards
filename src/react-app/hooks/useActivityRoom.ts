@@ -12,6 +12,9 @@ interface UseActivityRoomResult {
   updateCard: (card: Card) => void;
   deleteCard: (cardId: string) => void;
   reorderCard: (cardId: string, newIndex: number) => void;
+  addCardExtraData: (cardId: string, item: string) => void;
+  updateCardExtraData: (cardId: string, extraDataIndex: number, updatedItem: string) => void;
+  deleteCardExtraData: (cardId: string, extraDataIndex: number) => void;
   loading: boolean;
 }
 
@@ -95,6 +98,55 @@ export function useActivityRoom(activityId: string): UseActivityRoomResult {
             cards: newCards,
           };
         });
+      } else if (message.type === 'card-extra-data-add') {
+        setActivity(prev => {
+          return {
+            ...prev,
+            cards: (prev.cards || []).map(card => {
+              if (card.id === message.cardId) {
+                return {
+                  ...card,
+                  extraData: [...(card.extraData || []), message.extraDataItem],
+                };
+              }
+              return card;
+            }),
+          };
+        });
+      } else if (message.type === 'card-extra-data-update') {
+        setActivity(prev => {
+          return {
+            ...prev,
+            cards: (prev.cards || []).map(card => {
+              if (card.id === message.cardId && card.extraData) {
+                const newExtraData = [...card.extraData];
+                newExtraData[message.extraDataIndex] = message.updatedItem;
+                return {
+                  ...card,
+                  extraData: newExtraData,
+                };
+              }
+              return card;
+            }),
+          };
+        });
+      } else if (message.type === 'card-extra-data-delete') {
+        setActivity(prev => {
+          return {
+            ...prev,
+            cards: (prev.cards || []).map(card => {
+              if (card.id === message.cardId && card.extraData) {
+                const newExtraData = [...card.extraData];
+                newExtraData.splice(message.extraDataIndex, 1);
+                return {
+                  ...card,
+                  extraData: newExtraData,
+                };
+              }
+              return card;
+            }),
+          };
+        });
       }
     },
   });
@@ -175,6 +227,37 @@ export function useActivityRoom(activityId: string): UseActivityRoomResult {
     } satisfies Message));
   }, [socket, isConnected]);
 
+  const addCardExtraData = useCallback((cardId: string, item: string) => {
+    if (!socket || !isConnected) return;
+
+    socket.send(JSON.stringify({
+      type: 'card-extra-data-add',
+      cardId,
+      extraDataItem: item,
+    } satisfies Message));
+  }, [socket, isConnected]);
+
+  const updateCardExtraData = useCallback((cardId: string, extraDataIndex: number, updatedItem: string) => {
+    if (!socket || !isConnected) return;
+
+    socket.send(JSON.stringify({
+      type: 'card-extra-data-update',
+      cardId,
+      extraDataIndex,
+      updatedItem,
+    } satisfies Message));
+  }, [socket, isConnected]);
+
+  const deleteCardExtraData = useCallback((cardId: string, extraDataIndex: number) => {
+    if (!socket || !isConnected) return;
+
+    socket.send(JSON.stringify({
+      type: 'card-extra-data-delete',
+      cardId,
+      extraDataIndex,
+    } satisfies Message));
+  }, [socket, isConnected]);
+
   return {
     activity,
     isConnected,
@@ -184,6 +267,9 @@ export function useActivityRoom(activityId: string): UseActivityRoomResult {
     updateCard,
     deleteCard,
     reorderCard,
+    addCardExtraData,
+    updateCardExtraData,
+    deleteCardExtraData,
     loading,
   };
 }

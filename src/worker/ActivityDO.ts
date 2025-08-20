@@ -85,6 +85,45 @@ export class ActivityDO extends Server<Env> {
     await this.ctx.storage.put("activity", this.activity);
   }
 
+  async addCardExtraData(cardId: string, extraDataItem: string) {
+    if (!this.activity.cards) {
+      return;
+    }
+    const card = this.activity.cards.find(c => c.id === cardId);
+    if (!card) {
+      return;
+    }
+    if (!card.extraData) {
+      card.extraData = [];
+    }
+    card.extraData.push(extraDataItem);
+    await this.ctx.storage.put("activity", this.activity);
+  }
+
+  async updateCardExtraData(cardId: string, extraDataIndex: number, updatedItem: string) {
+    if (!this.activity.cards) {
+      return;
+    }
+    const card = this.activity.cards.find(c => c.id === cardId);
+    if (!card || !card.extraData || extraDataIndex < 0 || extraDataIndex >= card.extraData.length) {
+      return;
+    }
+    card.extraData[extraDataIndex] = updatedItem;
+    await this.ctx.storage.put("activity", this.activity);
+  }
+
+  async deleteCardExtraData(cardId: string, extraDataIndex: number) {
+    if (!this.activity.cards) {
+      return;
+    }
+    const card = this.activity.cards.find(c => c.id === cardId);
+    if (!card || !card.extraData || extraDataIndex < 0 || extraDataIndex >= card.extraData.length) {
+      return;
+    }
+    card.extraData.splice(extraDataIndex, 1);
+    await this.ctx.storage.put("activity", this.activity);
+  }
+
   // Lifecycle methods
 
   async onStart() {
@@ -187,6 +226,40 @@ export class ActivityDO extends Server<Env> {
         type: "card-reorder",
         cardId: message.cardId,
         newIndex: message.newIndex,
+      });
+
+      return;
+    }
+
+    if (message.type === "card-extra-data-add") {
+      await this.addCardExtraData(message.cardId, message.extraDataItem);
+      this.broadcastMessage({
+        type: "card-extra-data-add",
+        cardId: message.cardId,
+        extraDataItem: message.extraDataItem,
+      });
+
+      return;
+    }
+
+    if (message.type === "card-extra-data-update") {
+      await this.updateCardExtraData(message.cardId, message.extraDataIndex, message.updatedItem);
+      this.broadcastMessage({
+        type: "card-extra-data-update",
+        cardId: message.cardId,
+        extraDataIndex: message.extraDataIndex,
+        updatedItem: message.updatedItem,
+      });
+
+      return;
+    }
+
+    if (message.type === "card-extra-data-delete") {
+      await this.deleteCardExtraData(message.cardId, message.extraDataIndex);
+      this.broadcastMessage({
+        type: "card-extra-data-delete",
+        cardId: message.cardId,
+        extraDataIndex: message.extraDataIndex,
       });
 
       return;
