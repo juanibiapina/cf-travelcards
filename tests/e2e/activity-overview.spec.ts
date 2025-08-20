@@ -9,7 +9,7 @@ test.describe('Activity Overview Page', () => {
     await page.goto(`/activities/${activityId}`);
 
     // Wait for activity page to load (should show overview)
-    await expect(page.getByRole('button', { name: /create card/i })).toBeVisible();
+    await expect(page.locator('button[aria-label="Create card"]')).toBeVisible();
     await expect(page.locator('text=Click to name this activity')).toBeVisible();
   });
 
@@ -21,7 +21,7 @@ test.describe('Activity Overview Page', () => {
     await page.goto(`/activities/${activityId}`);
 
     // Wait for activity page to load (should redirect to overview)
-    await expect(page.getByRole('button', { name: /create card/i })).toBeVisible();
+    await expect(page.locator('button[aria-label="Create card"]')).toBeVisible();
 
     // Verify placeholder text is shown when no name is set
     await expect(page.locator('text=Click to name this activity')).toBeVisible();
@@ -72,7 +72,7 @@ test.describe('Activity Overview Page', () => {
     await page.goto(`/activities/${activityId}`);
 
     // Wait for activity page to load (should redirect to overview)
-    await expect(page.getByRole('button', { name: /create card/i })).toBeVisible();
+    await expect(page.locator('button[aria-label="Create card"]')).toBeVisible();
 
     // Click on placeholder to enter edit mode
     await page.click('text=Click to name this activity');
@@ -111,7 +111,7 @@ test.describe('Activity Overview Page', () => {
     await page.goto(`/activities/${activityId}`);
 
     // Wait for activity page to load (should redirect to overview)
-    await expect(page.getByRole('button', { name: /create card/i })).toBeVisible();
+    await expect(page.locator('button[aria-label="Create card"]')).toBeVisible();
 
     // Step 1: Select start date
     const button = page.locator('button:has-text("Select date")');
@@ -166,7 +166,7 @@ test.describe('Activity Overview Page', () => {
     await page.goto(`/activities/${activityId}`);
 
     // Wait for activity page to load (should redirect to overview)
-    await expect(page.getByRole('button', { name: /create card/i })).toBeVisible();
+    await expect(page.locator('button[aria-label="Create card"]')).toBeVisible();
 
     // Step 1: First set a start date
     const button = page.locator('button:has-text("Select date")');

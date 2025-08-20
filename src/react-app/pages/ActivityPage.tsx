@@ -8,6 +8,7 @@ import Box from "../components/Box";
 import ActivityHeader from "../components/ActivityHeader";
 import CardCreationModal from "../components/cards/CardCreationModal";
 import CardsList from "../components/cards/CardsList";
+import FloatingActionButton from "../components/FloatingActionButton";
 import { useActivityRoom } from "../hooks/useActivityRoom";
 import { Card, CardInput } from "../../shared";
 
@@ -126,6 +127,11 @@ const ActivityPage = () => {
           editingCard={undefined}
         />
       </div>
+
+      <FloatingActionButton
+        onClick={() => setIsCreateModalOpen(true)}
+        disabled={!isConnected}
+      />
     </div>
   );
 };
