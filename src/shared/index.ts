@@ -44,4 +44,9 @@ export type Message =
   | {
       type: "card-delete";
       cardId: string;
+    }
+  | {
+      type: "card-reorder";
+      cardId: string;
+      newIndex: number;
     };

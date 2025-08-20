@@ -11,6 +11,7 @@ interface UseActivityRoomResult {
   createCard: (card: Card) => void;
   updateCard: (card: Card) => void;
   deleteCard: (cardId: string) => void;
+  reorderCard: (cardId: string, newIndex: number) => void;
   loading: boolean;
 }
 
@@ -77,6 +78,23 @@ export function useActivityRoom(activityId: string): UseActivityRoomResult {
             cards: (prev.cards || []).filter(card => card.id !== message.cardId),
           };
         });
+      } else if (message.type === 'card-reorder') {
+        setActivity(prev => {
+          if (!prev.cards) return prev;
+
+          const currentIndex = prev.cards.findIndex(card => card.id === message.cardId);
+          if (currentIndex === -1) return prev;
+
+          const newCards = [...prev.cards];
+          const card = newCards[currentIndex];
+          newCards.splice(currentIndex, 1);
+          newCards.splice(message.newIndex, 0, card);
+
+          return {
+            ...prev,
+            cards: newCards,
+          };
+        });
       }
     },
   });
@@ -128,6 +146,35 @@ export function useActivityRoom(activityId: string): UseActivityRoomResult {
     } satisfies Message));
   }, [socket, isConnected]);
 
+  const reorderCard = useCallback((cardId: string, newIndex: number) => {
+    if (!socket || !isConnected) return;
+
+    // Optimistically update the local state
+    setActivity(prev => {
+      if (!prev.cards) return prev;
+
+      const currentIndex = prev.cards.findIndex(card => card.id === cardId);
+      if (currentIndex === -1 || currentIndex === newIndex) return prev;
+
+      const newCards = [...prev.cards];
+      const card = newCards[currentIndex];
+      newCards.splice(currentIndex, 1);
+      newCards.splice(newIndex, 0, card);
+
+      return {
+        ...prev,
+        cards: newCards,
+      };
+    });
+
+    // Send to backend
+    socket.send(JSON.stringify({
+      type: 'card-reorder',
+      cardId,
+      newIndex,
+    } satisfies Message));
+  }, [socket, isConnected]);
+
   return {
     activity,
     isConnected,
@@ -136,6 +183,7 @@ export function useActivityRoom(activityId: string): UseActivityRoomResult {
     createCard,
     updateCard,
     deleteCard,
+    reorderCard,
     loading,
   };
 }

@@ -52,6 +52,27 @@ export class ActivityDO extends Server<Env> {
     await this.ctx.storage.put("activity", this.activity);
   }
 
+  async reorderCard(cardId: string, newIndex: number) {
+    if (!this.activity.cards) {
+      return;
+    }
+
+    const currentIndex = this.activity.cards.findIndex(card => card.id === cardId);
+    if (currentIndex === -1 || newIndex < 0 || newIndex >= this.activity.cards.length) {
+      return;
+    }
+
+    if (currentIndex === newIndex) {
+      return;
+    }
+
+    const card = this.activity.cards[currentIndex];
+    this.activity.cards.splice(currentIndex, 1);
+    this.activity.cards.splice(newIndex, 0, card);
+
+    await this.ctx.storage.put("activity", this.activity);
+  }
+
   async updateName(name: string) {
     this.activity.name = name;
     await this.ctx.storage.put("activity", this.activity);
@@ -155,6 +176,17 @@ export class ActivityDO extends Server<Env> {
       this.broadcastMessage({
         type: "card-delete",
         cardId: message.cardId,
+      });
+
+      return;
+    }
+
+    if (message.type === "card-reorder") {
+      await this.reorderCard(message.cardId, message.newIndex);
+      this.broadcastMessage({
+        type: "card-reorder",
+        cardId: message.cardId,
+        newIndex: message.newIndex,
       });
 
       return;
