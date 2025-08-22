@@ -96,7 +96,7 @@ test.describe('Card Extra Data', () => {
     await expect(page.locator('input[placeholder="Add extra data..."]')).not.toBeVisible();
   });
 
-  test('does not show extra data input during card selection mode', async ({ page }) => {
+  test('does not show extra data input during reorder mode', async ({ page }) => {
     await setupClerkTestingToken({ page });
 
     // Navigate to home page and create activity
@@ -118,27 +118,20 @@ test.describe('Card Extra Data', () => {
     await page.press('input[placeholder*="What\'s on your mind"]', 'Enter');
     await expect(page.locator('text=Second Card')).toBeVisible();
 
-    // Long press on first card to enter selection mode (simulate with mobile touch)
-    const firstCard = page.locator('text=First Card').locator('..');
+    // Enter reorder mode via hamburger menu
+    await page.click('[aria-label="Activity menu"]');
+    await page.click('text=Reorder Cards');
 
-    // Touch start with coordinates
-    await firstCard.dispatchEvent('touchstart', {
-      touches: [{ clientX: 100, clientY: 100, identifier: 0 }]
-    });
-
-    // Wait a bit to simulate long press
-    await page.waitForTimeout(600);
-
-    // Touch end to complete long press
-    await firstCard.dispatchEvent('touchend');
-
-    // Wait for selection mode to be active
-    await expect(page.locator('text=Selection mode')).toBeVisible();
+    // Wait for reorder mode to be active
+    await expect(page.locator('text=Done')).toBeVisible();
 
     // Try to click on the second card - should not show extra data input
     await page.click('text=Second Card');
 
     // Verify extra data input does not appear
     await expect(page.locator('input[placeholder="Add extra data..."]')).not.toBeVisible();
+
+    // Exit reorder mode
+    await page.click('text=Done');
   });
 });

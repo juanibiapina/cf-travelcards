@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router";
 import { FiAlertTriangle } from "react-icons/fi";
 import { useAuth, RedirectToSignIn } from '@clerk/clerk-react';
@@ -10,13 +10,31 @@ import CardCreationModal from "../components/cards/CardCreationModal";
 import CardsList from "../components/cards/CardsList";
 import FloatingActionButton from "../components/FloatingActionButton";
 import { useActivityRoom } from "../hooks/useActivityRoom";
-import { Card, CardInput } from "../../shared";
+import { useReorderMode } from "../hooks/useReorderMode";
+import { useCardOperations } from "../hooks/useCardOperations";
 
 const ActivityPage = () => {
   const params = useParams<{ activityId: string }>();
   const { isLoaded, userId } = useAuth();
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const { activity, loading, updateName, updateDates, createCard, updateCard, reorderCard, addCardExtraData, isConnected } = useActivityRoom(params.activityId || '');
+  const { isReorderMode, canReorder, toggleReorderMode } = useReorderMode({
+    cards: activity?.cards || []
+  });
+  const {
+    isCreateModalOpen,
+    openCreateModal,
+    closeCreateModal,
+    handleCreateCard,
+    handleUpdateCard,
+    handleReorderCard,
+    handleAddCardExtraData
+  } = useCardOperations({
+    createCard,
+    updateCard,
+    reorderCard,
+    addCardExtraData,
+    isConnected
+  });
 
 
   // Update document title based on activity state
@@ -37,26 +55,6 @@ const ActivityPage = () => {
     };
   }, [activity?.name, loading, activity]);
 
-  const handleCreateCard = (cardData: CardInput) => {
-    if (!isConnected) return;
-
-    const newCard: Card = {
-      ...cardData,
-      id: `card-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    createCard(newCard);
-  };
-
-  const handleUpdateCard = (card: Card) => {
-    if (!isConnected) return;
-    updateCard(card);
-  };
-
-  const handleCloseModal = () => {
-    setIsCreateModalOpen(false);
-  };
 
   const handleNameUpdate = (name: string) => {
     if (isConnected) {
@@ -68,6 +66,7 @@ const ActivityPage = () => {
     if (!isConnected) return;
     updateDates(startDate, endDate, startTime);
   };
+
 
   // Show loading while authentication status is being determined
   if (!isLoaded) {
@@ -109,6 +108,11 @@ const ActivityPage = () => {
         onNameUpdate={handleNameUpdate}
         onDateChange={handleDateChange}
         disabled={!isConnected}
+        reorder={{
+          isReorderMode,
+          hasCards: canReorder,
+          onToggle: toggleReorderMode
+        }}
       />
 
       {/* Content */}
@@ -116,13 +120,14 @@ const ActivityPage = () => {
         {/* Cards List */}
         <CardsList
           cards={activity?.cards || []}
-          onReorderCard={reorderCard}
-          onAddCardExtraData={addCardExtraData}
+          onReorderCard={handleReorderCard}
+          onAddCardExtraData={handleAddCardExtraData}
+          isReorderMode={isReorderMode}
         />
 
         <CardCreationModal
           isOpen={isCreateModalOpen}
-          onClose={handleCloseModal}
+          onClose={closeCreateModal}
           onCreateCard={handleCreateCard}
           onUpdateCard={handleUpdateCard}
           editingCard={undefined}
@@ -130,7 +135,7 @@ const ActivityPage = () => {
       </div>
 
       <FloatingActionButton
-        onClick={() => setIsCreateModalOpen(true)}
+        onClick={openCreateModal}
         disabled={!isConnected}
       />
     </div>

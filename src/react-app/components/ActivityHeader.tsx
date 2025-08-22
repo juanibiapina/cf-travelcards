@@ -1,5 +1,12 @@
 import { useState } from "react";
 import DateSelector from "./DateSelector";
+import HamburgerMenu from "./HamburgerMenu";
+
+interface ReorderConfig {
+  isReorderMode: boolean;
+  hasCards: boolean;
+  onToggle: () => void;
+}
 
 interface ActivityHeaderProps {
   activityName?: string;
@@ -9,6 +16,7 @@ interface ActivityHeaderProps {
   onNameUpdate: (name: string) => void;
   onDateChange: (startDate: string, endDate?: string, startTime?: string) => void;
   disabled?: boolean;
+  reorder?: ReorderConfig;
 }
 
 const ActivityHeader = ({
@@ -18,7 +26,8 @@ const ActivityHeader = ({
   startTime,
   onNameUpdate,
   onDateChange,
-  disabled = false
+  disabled = false,
+  reorder
 }: ActivityHeaderProps) => {
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameText, setNameText] = useState("");
@@ -101,6 +110,26 @@ const ActivityHeader = ({
               </div>
             )}
           </div>
+
+          {reorder?.isReorderMode ? (
+            <button
+              onClick={reorder.onToggle}
+              className="ml-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-medium transition-colors"
+              disabled={disabled}
+            >
+              Done
+            </button>
+          ) : (
+            <div className="ml-4">
+              {reorder?.hasCards && (
+                <HamburgerMenu
+                  onReorderToggle={reorder.onToggle}
+                  isReorderMode={reorder.isReorderMode}
+                  disabled={disabled}
+                />
+              )}
+            </div>
+          )}
         </div>
       </div>
     </header>
