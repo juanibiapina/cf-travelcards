@@ -8,6 +8,8 @@ import Box from '../Box';
 interface SortableCardProps {
   card: Card;
   onAddExtraData: (cardId: string, item: string) => void;
+  onToggleFold?: (cardId: string) => void;
+  isFolded: boolean;
   showExtraDataInput: boolean;
   onShowExtraDataInput: (cardId: string) => void;
   onHideExtraDataInput: () => void;
@@ -17,6 +19,8 @@ interface SortableCardProps {
 export const SortableCard: React.FC<SortableCardProps> = ({
   card,
   onAddExtraData,
+  onToggleFold,
+  isFolded,
   showExtraDataInput,
   onShowExtraDataInput,
   onHideExtraDataInput,
@@ -58,9 +62,12 @@ export const SortableCard: React.FC<SortableCardProps> = ({
         <CardComponent
           card={card}
           onAddExtraData={onAddExtraData}
+          onToggleFold={onToggleFold}
+          isFolded={isFolded}
           showExtraDataInput={showExtraDataInput}
           onShowExtraDataInput={onShowExtraDataInput}
           onHideExtraDataInput={onHideExtraDataInput}
+          isReorderMode={isReorderMode}
         />
       </Box>
     </div>

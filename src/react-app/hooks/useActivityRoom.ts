@@ -258,6 +258,7 @@ export function useActivityRoom(activityId: string): UseActivityRoomResult {
     } satisfies Message));
   }, [socket, isConnected]);
 
+
   return {
     activity,
     isConnected,

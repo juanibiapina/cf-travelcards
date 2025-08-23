@@ -30,8 +30,8 @@ test.describe('Card Extra Data', () => {
     // Wait for modal to close and card to appear
     await expect(page.locator('text=Test Card')).toBeVisible();
 
-    // Click on the card to show extra data input
-    await page.click('text=Test Card');
+    // Click on the plus button to show extra data input
+    await page.click('button[aria-label="Add extra data"]');
 
     // Wait for extra data input to appear
     await expect(page.locator('input[placeholder="Add extra data..."]')).toBeVisible();
@@ -40,22 +40,28 @@ test.describe('Card Extra Data', () => {
     await page.fill('input[placeholder="Add extra data..."]', 'This is some extra information');
     await page.press('input[placeholder="Add extra data..."]', 'Enter');
 
-    // Verify the extra data appears as a sub-item
-    await expect(page.locator('text=This is some extra information')).toBeVisible();
+    // Extra data is folded by default, so click card to unfold and see the data
+    await page.click('text=Test Card');
+
+    // Wait for the chevron to show unfolded state
+    await expect(page.locator('[data-testid="chevron-down"]')).toBeVisible();
+
+    // Wait for unfold animation and verify the extra data appears as a sub-item
+    await expect(page.locator('text=This is some extra information')).toBeVisible({ timeout: 10000 });
     // Check for bullet point
     await expect(page.locator('span:has-text("•")')).toBeVisible();
 
-    // Click on the card again to add a URL
-    await page.click('text=Test Card');
+    // Click on the plus button again to add a URL
+    await page.click('button[aria-label="Add extra data"]');
     await expect(page.locator('input[placeholder="Add extra data..."]')).toBeVisible();
 
     // Add a URL
     await page.fill('input[placeholder="Add extra data..."]', 'https://example.com');
     await page.press('input[placeholder="Add extra data..."]', 'Enter');
 
-    // Verify the URL appears as a clickable link
+    // Card should remain unfolded after adding more extra data, so URL should be visible
     const urlLink = page.locator('a[href="https://example.com"]');
-    await expect(urlLink).toBeVisible();
+    await expect(urlLink).toBeVisible({ timeout: 10000 });
     await expect(urlLink).toHaveAttribute('target', '_blank');
     await expect(urlLink).toHaveAttribute('rel', 'noopener noreferrer');
 
@@ -85,8 +91,8 @@ test.describe('Card Extra Data', () => {
     await page.press('input[placeholder*="What\'s on your mind"]', 'Enter');
     await expect(page.locator('text=Test Card for Closing')).toBeVisible();
 
-    // Click on the card to show extra data input
-    await page.click('text=Test Card for Closing');
+    // Click on the plus button to show extra data input
+    await page.click('button[aria-label="Add extra data"]');
     await expect(page.locator('input[placeholder="Add extra data..."]')).toBeVisible();
 
     // Click outside the card (on the background)
@@ -125,10 +131,10 @@ test.describe('Card Extra Data', () => {
     // Wait for reorder mode to be active
     await expect(page.locator('text=Done')).toBeVisible();
 
-    // Try to click on the second card - should not show extra data input
-    await page.click('text=Second Card');
+    // Verify the plus button is disabled during reorder mode
+    await expect(page.locator('button[aria-label="Add extra data"]').first()).toBeDisabled();
 
-    // Verify extra data input does not appear
+    // Verify extra data input does not appear during reorder mode
     await expect(page.locator('input[placeholder="Add extra data..."]')).not.toBeVisible();
 
     // Exit reorder mode

@@ -124,6 +124,7 @@ export class ActivityDO extends Server<Env> {
     await this.ctx.storage.put("activity", this.activity);
   }
 
+
   // Lifecycle methods
 
   async onStart() {
