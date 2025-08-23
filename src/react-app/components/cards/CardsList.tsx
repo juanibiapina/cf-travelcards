@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import {
   DndContext,
   DragOverlay,
@@ -9,6 +9,7 @@ import {
 import { Card } from '../../../shared';
 import SortableCard from './SortableCard';
 import { useCardDragDrop } from '../../hooks/useCardDragDrop';
+import { useCardState } from '../../hooks/useCardState';
 
 interface CardsListProps {
   cards: Card[];
@@ -24,51 +25,24 @@ export const CardsList: React.FC<CardsListProps> = ({
   onAddCardExtraData,
   isReorderMode = false
 }) => {
-  const [extraDataInputCardId, setExtraDataInputCardId] = useState<string | null>(null);
-  // Local state for unfolded cards - cards with extra data start folded by default
-  const [unfoldedCardIds, setUnfoldedCardIds] = useState<Set<string>>(new Set());
-
   const { activeId, dndContextProps, sortableContextProps } = useCardDragDrop({
     cards,
     onReorderCard,
     isReorderMode
   });
 
-  const handleShowExtraDataInput = useCallback((cardId: string) => {
-    if (isReorderMode) return; // Don't show input during reorder mode
-    setExtraDataInputCardId(cardId);
-  }, [isReorderMode]);
-
-  const handleHideExtraDataInput = useCallback(() => {
-    setExtraDataInputCardId(null);
-  }, []);
+  const {
+    extraDataInputCardId,
+    isCardFolded,
+    handleToggleFold,
+    handleShowExtraDataInput,
+    handleHideExtraDataInput,
+  } = useCardState(isReorderMode);
 
   const handleAddExtraData = useCallback((cardId: string, item: string) => {
     onAddCardExtraData?.(cardId, item);
     // Don't change the fold state when adding extra data - preserve current state
   }, [onAddCardExtraData]);
-
-  const handleToggleFold = useCallback((cardId: string) => {
-    setUnfoldedCardIds(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(cardId)) {
-        newSet.delete(cardId); // Card becomes folded (default state)
-      } else {
-        newSet.add(cardId); // Card becomes unfolded
-      }
-      return newSet;
-    });
-  }, []);
-
-  // Helper function to determine if a card should be folded
-  // Cards with extra data are folded by default, unless explicitly unfolded
-  const isCardFolded = useCallback((card: Card) => {
-    const hasExtraData = card.extraData && card.extraData.length > 0;
-    if (!hasExtraData) return false; // Cards without extra data are never folded
-
-    // Cards with extra data start folded by default, unless they're in the "unfolded" set
-    return !unfoldedCardIds.has(card.id);
-  }, [unfoldedCardIds]);
 
   const handleBackgroundClick = useCallback(() => {
     if (extraDataInputCardId) {
