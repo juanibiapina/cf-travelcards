@@ -47,7 +47,7 @@ export const SortableCard: React.FC<SortableCardProps> = ({
       {...(isReorderMode ? { ...attributes, ...listeners } : {})}
       className={`transition-all duration-200 ${
         isReorderMode
-          ? 'cursor-grab active:cursor-grabbing touch-manipulation'
+          ? 'cursor-grab active:cursor-grabbing touch-none'
           : ''
       } ${
         isDragging
