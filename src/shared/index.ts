@@ -3,6 +3,8 @@ export interface Card {
   type: string;
   createdAt: string;
   updatedAt: string;
+  date?: string;
+  children?: Card[];
 }
 
 export interface LinkCard extends Card {
@@ -18,6 +20,20 @@ export interface PollCard extends Card {
   question: string;
   options: string[];
   votes?: { userId: string; option: number }[];
+}
+
+export interface NoteCard extends Card {
+  type: 'note';
+  text: string;
+}
+
+export interface AILinkCard extends Card {
+  type: 'ailink';
+  url: string;
+  title?: string;
+  description?: string;
+  status?: 'processing' | 'completed' | 'error';
+  workflowId?: string;
 }
 
 export type Activity = {
@@ -42,30 +58,12 @@ export type PollCardInput = {
   options: string[];
 };
 
-export type Message =
-  | {
-      type: "activity";
-      activity: Activity;
-    }
-  | {
-      type: "name";
-      name: string;
-    }
-  | {
-      type: "dates";
-      startDate: string;
-      endDate?: string;
-      startTime?: string;
-    }
-  | {
-      type: "card-create";
-      card: Card;
-    }
-  | {
-      type: "card-update";
-      card: Card;
-    }
-  | {
-      type: "card-delete";
-      cardId: string;
-    };
+export type NoteCardInput = {
+  type: 'note';
+  text: string;
+};
+
+export type AILinkCardInput = {
+  type: 'ailink';
+  url: string;
+};

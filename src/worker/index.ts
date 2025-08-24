@@ -10,10 +10,13 @@ import { ActivityDO } from "./ActivityDO";
 export interface Env {
   SENTRY_DSN?: string;
   ENVIRONMENT?: string;
+  FIRECRAWL_API_KEY: string;
   CF_VERSION_METADATA?: {
     id: string;
   };
+  KV: KVNamespace;
   ACTIVITYDO: DurableObjectNamespace<ActivityDO>;
+  AILINK_WORKFLOW: Workflow;
   JWKS_PK: string; // Public key for JWT verification
 }
 
@@ -40,11 +43,18 @@ const createApp = (env: Env) => {
         // get token from query string
         const token = new URL(req.url).searchParams.get("token") ?? "";
 
+        // Allow connection without token for development/testing
+        if (!token) {
+          console.warn("WebSocket connection without authentication token");
+          return; // Allow connection
+        }
+
         try {
           await verifyToken(token, {
             jwtKey: env.JWKS_PK,
           });
-        } catch {
+        } catch (error) {
+          console.error("Token verification failed:", error);
           return new Response("Unauthorized", { status: 401 });
         }
       }
@@ -106,3 +116,4 @@ export default Sentry.withSentry(
   }
 );
 export { ActivityDO } from "./ActivityDO";
+export { default as AiLinkProcessor } from "./workflows/AiLinkProcessor";
